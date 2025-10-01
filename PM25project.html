@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PM2.5 Dust Alert Project — 3D Viewer</title>
+
+  <!-- 3D .glb viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --bg:#0e1116; --panel:#111520; --text:#eaeef7; --muted:#9aa4b2; --line:#1b2232; --accent:#5dd4ff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,Segoe UI,Arial}
+    a{color:inherit;text-decoration:none}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+    header{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-weight:700;cursor:pointer}
+    .btn:hover{background:#182033}
+    .spacer{flex:1}
+
+    .hero-title{
+      font-size: clamp(28px, 5.2vw, 48px);
+      line-height:1.05; font-weight:900; letter-spacing:.3px;
+      background: linear-gradient(90deg,#fff,#87e4ff); -webkit-background-clip:text; background-clip:text; color:transparent;
+      margin: 6px 0 2px;
+    }
+    .subtitle{color:var(--muted);font-size:15px}
+
+    .panel{
+      background:linear-gradient(180deg,rgba(21,27,40,.35),rgba(21,27,40,.12));
+      border:1px solid var(--line); border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,.25);
+    }
+
+    /* 3D viewer */
+    .viewer{margin:16px 0; padding:12px}
+    model-viewer{
+      width:100%; height: clamp(360px, 70vh, 820px);
+      background: radial-gradient(1000px 520px at 50% 90%, #151b24, #0e1116);
+      border-radius:12px;
+    }
+    .viewer-toolbar{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+    .status{color:var(--muted);font-size:13px;margin-left:auto}
+
+    /* Sections */
+    .section{padding:18px 0}
+    h2{font-size:22px;margin:0 0 8px}
+
+    /* Skills chips */
+    .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;font-weight:700}
+    .chip i{opacity:.9}
+
+    /* Hardware list */
+    .list{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel);margin:8px 0}
+    .list li{margin:6px 0}
+    .list i{color:#7ae7a8;margin-right:8px}
+
+    /* Gallery */
+    .gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .gallery .item{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0f1420;cursor:zoom-in}
+    .gallery .item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+    .gallery .item:hover img{transform:scale(1.03)}
+    .gallery .item.overall{grid-column: span 12; height: clamp(260px, 48vh, 520px)}
+    .gallery .item.small{grid-column: span 6; height: clamp(160px, 28vh, 320px)}
+    @media (min-width:900px){ .gallery .item.small{grid-column: span 3} }
+    .caption{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.4);padding:4px 8px;border-radius:8px;font-size:12px}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100}
+    .lightbox.open{display:flex}
+    .lb-inner{position:relative;max-width:min(96vw,1280px);max-height:min(92vh,1024px);display:flex;flex-direction:column;gap:10px}
+    .lb-frame{position:relative;background:#0b0f18;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .lb-frame img{display:block;max-width:calc(96vw - 24px);max-height:calc(86vh - 60px);object-fit:contain}
+    .lb-caption{color:#cfd6e5;font-size:14px;text-align:center}
+    .lb-close,.lb-prev,.lb-next{
+      position:absolute;top:10px;border:1px solid var(--line);background:rgba(17,21,32,.9);
+      color:#fff;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:800
+    }
+    .lb-close{right:10px}
+    .lb-prev{left:10px;top:50%;transform:translateY(-50%)}
+    .lb-next{right:10px;top:50%;transform:translateY(-50%)}
+    .lb-close:hover,.lb-prev:hover,.lb-next:hover{background:#182033}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <!-- ปุ่ม Home ไปที่หน้า index.html -->
+      <a class="btn" href="index.html"><i class="fa fa-house"></i> Home</a>
+      <div class="spacer"></div>
+      <span class="subtitle">Interactive model & project overview</span>
+    </header>
+
+    <!-- Title -->
+    <section style="padding:16px 0 8px">
+      <h1 class="hero-title">PM2.5 Dust Alert Project</h1>
+      <p class="subtitle">An embedded-system project that visualizes air quality and raises alerts for PM2.5 levels.</p>
+    </section>
+
+ <!-- 3D Model Viewer (unchanged) -->
+    <model-viewer id="mv"
+      src="other/pm25Model3D.glb"
+      camera-controls auto-rotate
+      ar ar-modes="webxr scene-viewer quick-look"
+      exposure="1" shadow-intensity="1"
+      alt="PM2.5 device 3D model">
+    </model-viewer>
+
+    <div class="bar">
+      <button class="btn" id="toggle">Pause rotate</button>
+      <span id="status">Loading model…</span>
+    </div>
+  </div>
+
+    <!-- Skills -->
+    <section class="section">
+      <h2>Skills Used</h2>
+      <div class="chips">
+        <span class="chip"><i class="fa fa-microchip"></i> Embedded System</span>
+        <span class="chip"><i class="fa fa-code"></i> C language</span>
+        <span class="chip"><i class="fa fa-cubes"></i> Tinkercad</span>
+      </div>
+    </section>
+
+    <!-- Hardware -->
+    <section class="section">
+      <h2>Hardware & Components</h2>
+      <ul class="list">
+        <li><i class="fa fa-check-circle"></i> NodeMCU V3 Lua WIFI Module ESP8266</li>
+        <li><i class="fa fa-check-circle"></i> Dust Sensor GP2Y1014AU0F</li>
+        <li><i class="fa fa-check-circle"></i> LCD1602 I2C</li>
+        <li><i class="fa fa-check-circle"></i> LED Indicator</li>
+        <li><i class="fa fa-check-circle"></i> Breadboard</li>
+        <li><i class="fa fa-check-circle"></i> Jumper Wires</li>
+      </ul>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section">
+      <h2>Project Overview — Gallery</h2>
+      <p class="subtitle" style="margin-bottom:10px">Large overall structure + step-by-step build images.</p>
+
+      <div class="gallery" id="gallery">
+        <!-- Overall -->
+        <figure class="item overall">
+          <img src="https://i.ibb.co/zWYyxRqz/Overall.png" alt="Overall structure" data-caption="Overall structure">
+          <figcaption class="caption">Overall structure</figcaption>
+        </figure>
+        <!-- Steps -->
+        <figure class="item small">
+          <img src="https://i.ibb.co/KQN6bzg/1.jpg" alt="Step 1" data-caption="Step 1">
+          <figcaption class="caption">Step 1</figcaption>
+        </figure>
+        <figure class="item small">
+          <img src="https://i.ibb.co/B23C3QMx/2.jpg" alt="Step 2" data-caption="Step 2">
+          <figcaption class="caption">Step 2</figcaption>
+        </figure>
+        <figure class="item small">
+          <img src="https://i.ibb.co/W4JsgV1N/3.jpg" alt="Step 3" data-caption="Step 3">
+          <figcaption class="caption">Step 3</figcaption>
+        </figure>
+        <figure class="item small">
+          <img src="https://i.ibb.co/4ZwK38Xw/4.jpg" alt="Step 4" data-caption="Step 4">
+          <figcaption class="caption">Step 4</figcaption>
+        </figure>
+        <figure class="item small">
+          <img src="https://i.ibb.co/YTR6Ptb0/5.png" alt="Step 5" data-caption="Step 5">
+          <figcaption class="caption">Step 5</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> PM2.5 Dust Alert Project — Pumiput Chaichat</div>
+    </footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lb-inner" role="dialog" aria-modal="true" aria-label="Image preview">
+      <div class="lb-frame">
+        <img id="lb-img" alt="">
+        <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+        <button class="lb-prev"  id="lb-prev"  aria-label="Previous">‹</button>
+        <button class="lb-next"  id="lb-next"  aria-label="Next">›</button>
+      </div>
+      <div class="lb-caption" id="lb-cap"></div>
+    </div>
+  </div>
+
+  <script>
+    // Year auto
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Model Viewer
+    const mv = document.getElementById('mv');
+    const btnRotate = document.getElementById('btn-rotate');
+    const btnReset = document.getElementById('btn-reset');
+    const statusEl = document.getElementById('status');
+
+    mv.addEventListener('load', () => statusEl.textContent = '✅ Model loaded');
+    mv.addEventListener('error', () => statusEl.textContent = '❌ Failed to load model (check path other/pm25Model3D.glb)');
+
+    btnRotate.addEventListener('click', () => {
+      if (mv.hasAttribute('auto-rotate')) {
+        mv.removeAttribute('auto-rotate');
+        btnRotate.innerHTML = '<i class="fa fa-rotate"></i> Resume rotate';
+      } else {
+        mv.setAttribute('auto-rotate', '');
+        btnRotate.innerHTML = '<i class="fa fa-rotate"></i> Pause rotate';
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      mv.setAttribute('camera-orbit', '45deg 70deg auto');
+      mv.setAttribute('field-of-view', '30deg');
+      mv.jumpCameraToGoal();
+    });
+
+    // Lightbox
+    const galleryImgs = Array.from(document.querySelectorAll('#gallery img'));
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCap = document.getElementById('lb-cap');
+    const lbClose = document.getElementById('lb-close');
+    const lbPrev = document.getElementById('lb-prev');
+    const lbNext = document.getElementById('lb-next');
+    let idx = -1;
+
+    function openLB(i){
+      idx = i;
+      const img = galleryImgs[idx];
+      lbImg.src = img.src;
+      lbImg.alt = img.alt || '';
+      lbCap.textContent = img.dataset.caption || img.alt || '';
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden','false');
+    }
+    function closeLB(){
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden','true');
+      lbImg.src = '';
+    }
+    function prevLB(){ openLB((idx - 1 + galleryImgs.length) % galleryImgs.length); }
+    function nextLB(){ openLB((idx + 1) % galleryImgs.length); }
+
+    galleryImgs.forEach((im, i)=> im.addEventListener('click', ()=> openLB(i)));
+    lbClose.addEventListener('click', closeLB);
+    lb.addEventListener('click', (e)=> { if(e.target === lb) closeLB(); });
+    lbPrev.addEventListener('click', prevLB);
+    lbNext.addEventListener('click', nextLB);
+    window.addEventListener('keydown', (e)=>{
+      if(!lb.classList.contains('open')) return;
+      if(e.key === 'Escape') closeLB();
+      if(e.key === 'ArrowLeft') prevLB();
+      if(e.key === 'ArrowRight') nextLB();
+    });
+  </script>
+</body>
+</html>

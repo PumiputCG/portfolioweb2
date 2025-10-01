@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pumiput Chaichat — Portfolio</title>
+  <meta name="description" content="Portfolio of Pumiput Chaichat — Software Developer (Full-stack, Laravel)" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{ --bg:#0e1116; --panel:#111520; --text:#eaeef7; --muted:#9aa4b2; --line:#1b2232; --accent:#5dd4ff; }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,Segoe UI,Arial}
+    a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
+    .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+    header{position:sticky;top:0;z-index:50;background:rgba(14,17,22,.75);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{font-weight:800;letter-spacing:.5px}
+    .menu{display:flex;gap:6px} .menu a{padding:8px 12px;border-radius:10px;color:var(--muted)} .menu a:hover{background:#151b28;color:var(--text)}
+    .hamb{display:none} @media (max-width:780px){.menu{display:none}.hamb{display:block}}
+    .mobile{display:none;border-top:1px solid var(--line)} .mobile a{display:block;padding:12px 16px;color:var(--muted)} .mobile a:hover{background:#161b27;color:var(--text)}
+
+    section{scroll-margin-top:80px}
+    .hero{padding:64px 0;background: radial-gradient(1200px 600px at 50% 100%, #151b24 0%, #0e1116 70%, #0e1116 100%)}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center}
+    @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:24px}}
+    .kicker{color:var(--muted);text-transform:uppercase;letter-spacing:.25em;font-weight:700;font-size:12px}
+    h1{font-size:44px;line-height:1.1;margin:8px 0 6px} @media (max-width:600px){h1{font-size:34px}}
+    .role{color:var(--accent)} .lead{color:var(--muted);max-width:60ch}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:600;cursor:pointer}
+    .btn:hover{background:#182033} .btn.outline{background:transparent}
+    .pfp{border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 40px rgba(0,0,0,.4)}
+
+    .section{padding:56px 0} .section h2{font-size:28px;margin:0 0 10px} .desc{color:var(--muted);margin-bottom:18px}
+
+    /* About */
+    .about .content{font-size:19px; line-height:2.05; color:#dce3ef; background:linear-gradient(180deg, rgba(21,27,40,.35), rgba(21,27,40,.12)); border:1px solid var(--line); padding:28px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,.25)}
+    .about .content p{margin:0 0 18px} .about .content p:last-child{margin-bottom:0}
+
+    .skills{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+    @media (max-width:1000px){.skills{grid-template-columns:repeat(4,1fr)}} @media (max-width:640px){.skills{grid-template-columns:repeat(2,1fr)}}
+    .chip{display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;border:1px solid var(--line);background:var(--panel);border-radius:12px;font-weight:600}
+    .chip i{font-size:20px}
+
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    @media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}} @media (max-width:640px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+    .thumb{height:170px;overflow:hidden} .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s} .card:hover .thumb img{transform:scale(1.06)}
+    .card-body{padding:14px 14px 16px} .title{font-weight:800;margin-bottom:4px} .muted{color:var(--muted);font-size:14px}
+    .list{margin:10px 0 12px;padding-left:18px;color:var(--muted)} .list li{margin:4px 0}
+
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media (max-width:900px){.contact-grid{grid-template-columns:1fr}}
+    input, textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0f1420;color:var(--text)}
+    footer{border-top:1px solid var(--line);color:var(--muted);padding:22px 0;text-align:center}
+    .social a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);margin-right:8px}
+    .social a:hover{background:#182033}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;background:rgba(0,0,0,.65);z-index:1000}
+    .modal.open{display:flex;align-items:center;justify-content:center}
+    .modal .box{width:min(1000px,92vw);height:min(90vh,900px);background:#0f1420;border:1px solid #1b2232;border-radius:14px;display:flex;flex-direction:column;overflow:hidden}
+    .modal .box header{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #1b2232}
+    .modal .box iframe{flex:1;border:0;background:#0b0f18}
+    .btn-close{padding:8px 12px;border:1px solid #1b2232;border-radius:10px;background:#111520;color:#eaeef7;font-weight:700;cursor:pointer}
+  </style>
+</head>
+<body>
+    
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home">PC.</a>
+      <nav class="menu" aria-label="Primary">
+        <a href="#home">HOME</a><a href="#about">ABOUT</a><a href="#skills">SKILLS</a><a href="#projects">PROJECTS</a><a href="#contact">CONTACT</a>
+      </nav>
+      <button class="hamb btn" id="hamb"><i class="fa fa-bars"></i></button>
+    </div>
+    <div class="mobile" id="mobile">
+      <a href="#home">HOME</a><a href="#about">ABOUT</a><a href="#skills">SKILLS</a><a href="#projects">PROJECTS</a><a href="#contact">CONTACT</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="kicker">HI THERE I'M</div>
+        <h1>Pumiput Chaichat</h1>
+        <div class="role">Software Developer</div>
+        <p class="lead">
+          A Computer Science graduate from Thammasat University with a strong foundation in programming,
+          system design, and database management. Skilled in developing web applications with both front-end
+          and back-end technologies, ensuring seamless user experiences and efficient system performance.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="#contact"><i class="fa fa-envelope"></i> Contact</a>
+          <button class="btn outline open-pdf" data-src="other/Pumiput_CV.pdf"><i class="fa fa-file-pdf"></i> CV</button>
+          <button class="btn open-pdf" data-src="other/Pumiput_Resume.pdf"><i class="fa fa-file-pdf"></i> Resume</button>
+        </div>
+        <div class="social" style="margin-top:12px">
+          <a href="https://github.com/PumiputCG" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://www.facebook.com/NongPumiputSE/" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.linkedin.com/in/pumiput-chaichat-9232a6270/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="pfp">
+        <img src="other/Profile_Pumiput.jpg" alt="Profile of Pumiput"
+             onerror="this.onerror=null; this.src='other/Profile_Pumiput.png';" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section about">
+    <div class="container">
+      <h2>ABOUT ME</h2>
+      <p class="desc">More about my background & goals.</p>
+      <div class="content">
+        <p>
+          A Computer Science graduate from Thammasat University with a strong foundation in programming, system design,
+          and database management. Skilled in developing web applications with both front-end and back-end technologies.
+        </p>
+        <p>
+          Eager to apply analytical and problem-solving skills to develop and implement robust, end-to-end software solutions.
+          Proven ability to translate user requirements into functional code through diverse academic projects.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section">
+    <div class="container">
+      <h2>SKILLS</h2>
+      <p class="desc">Tools & technologies I use regularly.</p>
+      <div class="skills">
+        <div class="chip"><i class="devicon-java-plain colored"></i>Java</div>
+        <div class="chip"><i class="devicon-python-plain colored"></i>Python</div>
+        <div class="chip"><i class="devicon-c-plain colored"></i>C</div>
+        <div class="chip"><i class="devicon-javascript-plain colored"></i>JavaScript</div>
+        <div class="chip"><i class="devicon-html5-plain colored"></i>HTML</div>
+        <div class="chip"><i class="devicon-css3-plain colored"></i>CSS</div>
+        <div class="chip"><i class="devicon-php-plain colored"></i>PHP</div>
+        <div class="chip"><i class="devicon-laravel-plain colored"></i>Laravel</div>
+        <div class="chip"><i class="fa fa-plug"></i>REST&nbsp;API</div>
+        <div class="chip"><i class="devicon-mysql-plain colored"></i>MySQL</div>
+        <div class="chip"><i class="fa fa-database"></i>SQL</div>
+        <div class="chip"><i class="devicon-xampp-plain colored"></i>XAMPP</div>
+        <div class="chip"><i class="devicon-git-plain colored"></i>Git</div>
+        <div class="chip"><i class="devicon-github-original"></i>GitHub</div>
+        <div class="chip"><i class="fa fa-terminal"></i>Command Prompt</div>
+        <div class="chip"><i class="fa fa-terminal"></i>PowerShell</div>
+        <div class="chip"><i class="devicon-figma-plain colored"></i>Figma</div>
+        <div class="chip"><i class="fa fa-diagram-project"></i>draw.io</div>
+        <div class="chip"><i class="fab fa-aws"></i>AWS</div>
+        <div class="chip"><i class="fa fa-cubes"></i>Tinkercad</div>
+        <div class="chip"><i class="fa fa-code"></i>Frontend–Backend</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2>PROJECTS</h2>
+      <p class="desc">Selected works.</p>
+
+      <div class="grid">
+        <!-- QuickCV -->
+        <article class="card">
+          <div class="thumb"><img src="other/Home_QuickCV.png" alt="QuickCV"></div>
+          <div class="card-body">
+            <div class="title">QuickCV</div>
+            <div class="muted">PHP · HTML/CSS · JS · MySQL</div>
+            <ul class="list"><li>Form-to-CV generator</li><li>Responsive layout</li></ul>
+            <div class="actions">
+              <a class="btn" href="http://quickcv.kesug.com/?i=1" target="_blank">Live</a>
+              <a class="btn" href="https://github.com/PumiputCG/QuickCV_Project" target="_blank">Repo</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- FraudCheck -->
+        <article class="card">
+          <div class="thumb"><img src="other/Home_FraudCheck.png" alt="FraudCheck"></div>
+          <div class="card-body">
+            <div class="title">FraudCheck Web Application</div>
+            <div class="muted">Laravel · MySQL · REST API</div>
+            <ul class="list"><li>Scammer lookup</li><li>Role-based access</li></ul>
+            <div class="actions">
+              <a class="btn" href="https://fraudcheck.kesug.com/index.html" target="_blank">Live</a>
+              <a class="btn" href="https://github.com/PumiputCG/FraudCheck_Project" target="_blank">Repo</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PM2.5 Dust Alert -->
+        <article class="card">
+          <div class="thumb"><img src="other/Home_Embeded.png" alt="PM2.5 Dust Alert"></div>
+          <div class="card-body">
+            <div class="title">PM2.5 Dust Alert Project</div>
+            <div class="muted">Embedded · ESP8266 · Sensor</div>
+            <ul class="list"><li>ESP8266 + GP2Y1014 Dust Sensor</li><li>Real-time Alert</li></ul>
+            <div class="actions">
+              <a class="btn" href="PM25project.html" target="_blank">View</a>
+            </div>
+          </div>
+        </article>
+
+
+           <!-- TU APP Project -->
+      <article class="card">
+        <div class="thumb">
+          <img src="other\Home_TuApp.png" alt="TU APP Project">
+        </div>
+        <div class="card-body">
+          <div class="title">TU APP Project</div>
+          <div class="muted">Prototype · Figma · UI · UX · Diamgram</div>
+          <ul class="list">
+            <li>Planning & user flow</li>
+            <li>Interactive prototype</li>
+          </ul>
+        
+          <div class="actions">
+            <a class="btn" href="https://www.figma.com/proto/3VnvFD9rPcy9TYcDI42aAw/TuApp_Project?node-id=0-1307&p=f&t=QYH5bNoqRK2RFweq-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
+               target="_blank" rel="noopener">View</a>
+                <button class="btn open-pdf" data-src="other/Diagram.pdf">Other</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Design Vaccine App Project -->
+     <article class="card">
+  <div class="thumb">
+    <img src="other\Home_Covid19.png" alt="Design Vaccine App">
+  </div>
+  <div class="card-body">
+    <div class="title">Design Vaccine App Project</div>
+    <div class="muted">Prototype · Figma · UI · UX</div>
+    <ul class="list">
+      <li>Vaccine booking flow</li>
+      <li>Clean interface</li>
+    </ul>
+    <div class="actions">
+      <!-- View: เปิด PDF ในโมดอล ไม่มีปุ่มดาวน์โหลด -->
+      <button class="btn open-pdf" data-src="other/Covid19_Project.pdf">View</button>
+    </div>
+  </div>
+</article>
+      </div>
+    </div>
+
+    
+  </section>
+
+
+
+
+
+  
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container">
+      <h2>CONTACT</h2>
+      <p class="desc">Reach me directly.</p>
+      <div class="contact-grid">
+        <div class="card" style="padding:16px">
+          <div class="title">Contact Info</div>
+          <div class="info" style="margin-top:8px">
+            <div class="row"><i class="fa fa-envelope"></i><a href="mailto:Pumiputc3210@gmail.com"> Email : Pumiputc3210@gmail.com</a></div>
+            <div class="row"><i class="fa fa-phone"></i><a href="tel:0834554179"> Tel : 083-455-4179</a></div>
+          </div>
+          <div class="actions" style="margin-top:12px">
+            <a class="btn" href="https://www.facebook.com/NongPumiputSE/" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="container">© <span id="y"></span> Pumiput Chaichat · Built with HTML/CSS/JS</div></footer>
+
+  <!-- PDF Modal -->
+  <div class="modal" id="pdfModal" aria-hidden="true">
+    <div class="box" role="dialog" aria-modal="true" aria-label="PDF preview">
+      <header>
+        <strong id="pdfTitle">Preview</strong>
+        <div style="flex:1"></div>
+        <button id="pdfClose" class="btn-close">Close</button>
+      </header>
+      <iframe id="pdfFrame" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const hamb = document.getElementById('hamb');
+    const mobile = document.getElementById('mobile');
+    hamb.addEventListener('click', ()=>{ mobile.style.display = mobile.style.display === 'block' ? 'none' : 'block'; });
+    mobile.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ mobile.style.display='none'; }));
+
+    const pdfModal = document.getElementById('pdfModal');
+    const pdfFrame = document.getElementById('pdfFrame');
+    const pdfTitle = document.getElementById('pdfTitle');
+    const pdfClose = document.getElementById('pdfClose');
+
+    document.querySelectorAll('.open-pdf').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const src = btn.getAttribute('data-src');
+        const label = btn.closest('.card-body')?.querySelector('.title')?.textContent?.trim() || 'Preview';
+        pdfTitle.textContent = 'Preview — ' + label;
+        pdfFrame.src = src + '#toolbar=0&navpanes=0&scrollbar=1';
+        pdfModal.classList.add('open'); pdfModal.setAttribute('aria-hidden','false');
+      });
+    });
+
+    function closePdf(){ pdfModal.classList.remove('open'); pdfModal.setAttribute('aria-hidden','true'); pdfFrame.src=''; }
+    pdfClose.addEventListener('click', closePdf);
+    pdfModal.addEventListener('click', e=>{ if(e.target===pdfModal) closePdf(); });
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closePdf(); });
+  </script>
+</body>
+</html>
